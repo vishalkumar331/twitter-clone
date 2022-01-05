@@ -152,7 +152,7 @@ app.get("/user/followers/", validateToken, async (request, response) => {
     SELECT username FROM user
     WHERE user_id IN (
         SELECT follower_user_id FROM user JOIN follower ON user.user_id = follower.following_user_id
-        WHERE username = "JoeBiden"
+        WHERE username = "${username}"
     );`;
   const followersResponse = await db.all(followersQuery);
   response.send(
