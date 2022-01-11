@@ -81,7 +81,7 @@ app.post("/login/", async (request, response) => {
   const isUserExistsQuery = `
     SELECT *
     FROM user 
-    WHERE username = "JoeBiden";`;
+    WHERE username = "${username}";`;
   const userData = await db.get(isUserExistsQuery);
 
   if (userData === undefined) {
@@ -112,7 +112,7 @@ app.get("/user/tweets/feed/", validateToken, async (request, response) => {
         FROM follower JOIN user ON follower.follower_user_id = user.user_id
         WHERE user.username = "${username}"
     )
-    ORDER BY tweet.date_time
+    ORDER BY tweet.date_time DESC
     LIMIT 4;`;
   const tweets = await db.all(getTweetsQuery);
 
@@ -140,7 +140,7 @@ app.get("/user/following/", validateToken, async (request, response) => {
   response.send(
     followersResponse.map((eachUser) => {
       return {
-        username: eachUser.username,
+        name: eachUser.username,
       };
     })
   );
@@ -197,7 +197,7 @@ app.get("/tweets/:tweetId/", validateToken, async (request, response) => {
   }
 });
 
-// get tweet like users
+// get tweet like users 
 app.get("/tweets/:tweetId/likes/", validateToken, async (request, response) => {
   const { tweetId } = request.params;
   const { username } = request;
